@@ -8,8 +8,6 @@ export ZOPEN_MAKE_OPTS=" --build ../build --parallel \$ZOPEN_NUM_JOBS --target a
 export ZOPEN_MAKE_MINIMAL="yes"
 export ZOPEN_COMP=CLANG
 
-#export ZOPEN_INSTALL=zopen_install
-
 export ZOPEN_BUILD_LINE="DEV"
 export ZOPEN_DEV_URL="https://github.com/zopencommunity/libzedc_ascii.git"
 export ZOPEN_DEV_DEPS="make cmake git coreutils"
@@ -18,7 +16,7 @@ export ZOPEN_INSTALL_OPTS="--install ../build"
 
 zopen_check()
 {
-  # Nothing to check at this time
+  # Nothing to check at this time. Implement make check in libzedc_ascii
 }
 
 zopen_check_results()
@@ -41,9 +39,11 @@ fi
 OLD_IFS=\$IFS
 IFS=':'
 zzfound=false
+
+#Search in this path first - /usr/lpp/hzc/lib/
+
 for p in \$ZOPEN_OLD_LIBPATH; do
    if [ -x "\$p/libzz.a" ]; then
-     export LIBPATH="\${LIBPATH}:\${p}"
      export ZOPEN_EXTRA_CFLAGS="\${ZOPEN_EXTRA_CFLAGS} -I\$PWD/include"
      export ZOPEN_EXTRA_CXXFLAGS="\${ZOPEN_EXTRA_CXXFLAGS} -I\$PWD/include"
      export ZOPEN_EXTRA_LDFLAGS="\${ZOPEN_EXTRA_LDFLAGS} -L\$PWD/lib -L\${p}"
@@ -62,6 +62,11 @@ return 0
 
 ZZ
 }
+
+#zopen_check()
+#{
+#	Validate the version
+#}
 
 zopen_get_version()
 {
@@ -95,10 +100,5 @@ zopen_get_version()
  (export ZOPEN_OLD_PATH=$PATH; PATH="$ZOPEN_OLD_PATH" $CXX $CXXFLAGS $CPPFLAGS -isystem include -isystem include/c++/v1/ -L $ZOPEN_INSTALL_DIR/lib -L $ZEDC_LIB_PATH -o$TMP_EXE $TMP_CPP -lzedc_ascii -lzz)
   $TMP_EXE && rm $TMP_CPP && rm $TMP_EXE
 
-}
-
-zopen_install() 
-{
-  mkdir -p $ZOPEN_INSTALL_DIR
 }
 
